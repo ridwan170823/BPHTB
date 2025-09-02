@@ -93,9 +93,34 @@ return [
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => 'migrasi_laravel',
+            'search_path' => 'migrasi_laravel','bphtb',
             'sslmode' => 'prefer',
         ],
+
+        'sismiop' => [
+            'driver' => 'oracle',
+            'host' => env('DB_SISMIOP_HOST', '173.16.6.2'),
+            'port' => env('DB_SISMIOP_PORT', '1521'),
+            'database' => env('DB_SISMIOP_SERVICE_NAME', 'SIMPBB'),
+            'service_name' => env('DB_SISMIOP_SERVICE_NAME', 'SIMPBB'),
+            'username' => env('DB_SISMIOP_USERNAME', 'REALISASI_PBB'),
+            'password' => env('DB_SISMIOP_PASSWORD', 'R34L1S4S1_PBB_212'),
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+            'prefix_schema' => '',
+            'edition' => 'ora$base',
+            'server_version' => '11g',
+            'load_balance' => 'yes',
+            'max_name_len' => 30,
+            'dynamic' => [],
+            'sessionVars' => [
+            'NLS_TIME_FORMAT' => 'HH24:MI:SS',
+            'NLS_DATE_FORMAT' => 'YYYY-MM-DD HH24:MI:SS',
+            'NLS_TIMESTAMP_FORMAT' => 'YYYY-MM-DD HH24:MI:SS',
+            'NLS_TIMESTAMP_TZ_FORMAT' => 'YYYY-MM-DD HH24:MI:SS TZH:TZM',
+            'NLS_NUMERIC_CHARACTERS' => '.,',
+    ],
+],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
@@ -111,8 +136,7 @@ return [
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
-
-    ],
+],
 
     /*
     |--------------------------------------------------------------------------

@@ -41,13 +41,27 @@
         <!-- Role -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-            <select name="role"
+            <select name="role" id="role"
                     class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 shadow-sm" required>
-                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
+                <option value="" disabled selected>Pilih Role</option>
+                @foreach (\App\Models\User::ROLES as $key => $label)
+                    <option value="{{ $key }}" {{ old('role') == $key ? 'selected' : '' }}>
+                        {{ $label }}
+                    </option>
+                @endforeach
             </select>
             @error('role') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
         </div>
+        {{-- Pilih PPAT (Hanya jika role = notaris) --}}
+<div class="mb-4" id="ppat-select-group" style="display: none;">
+    <label for="id_ppat" class="block text-sm font-medium text-gray-700">Pilih PPAT</label>
+    <select id="id_ppat" name="id_ppat" class="border-gray-300 border rounded-lg p-2 w-full">
+        <option value="">-- Pilih PPAT --</option>
+        @foreach ($ppats as $ppat)
+            <option value="{{ $ppat->id }}">{{ $ppat->nama_ppat }}</option>
+        @endforeach
+    </select>
+</div>
 
         <!-- Tombol -->
         <div class="flex space-x-3 pt-2">
@@ -63,4 +77,24 @@
         </div>
     </form>
 </div>
+@endsection
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const roleSelect = document.getElementById('role');
+        const ppatGroup = document.getElementById('ppat-select-group');
+
+        function togglePpatField() {
+            if (roleSelect.value === 'notaris') {
+                ppatGroup.style.display = 'block';
+            } else {
+                ppatGroup.style.display = 'none';
+                document.getElementById('id_ppat').value = ''; // reset jika bukan notaris
+            }
+        }
+
+        roleSelect.addEventListener('change', togglePpatField);
+        togglePpatField(); // jalankan saat pertama load
+    });
+</script>
 @endsection

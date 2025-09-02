@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class WajibPajak extends Model
+class Notaris extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class WajibPajak extends Model
 
     protected $fillable = [
         'nik', 'npwp', 'nama', 'alamat', 'telp',
-        'kelurahan', 'kecamatan', 'kota', 'kd_jns', 'tgl_daf',
+        'kelurahan', 'kecamatan', 'kota', 'tgl_daf',
     ];
 
     public $timestamps = false; // set ke true jika tabel punya created_at dan updated_at

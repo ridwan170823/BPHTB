@@ -30,7 +30,7 @@ class Pelayanan extends Model
         'njop_bng',
         'luas_bumi',
         'luas_bng',
-        'nama_spt',
+        'nama_sppt',
         'luas_bumi_trk',
         'luas_bng_trk',
         'id_transaksi',
@@ -52,9 +52,14 @@ class Pelayanan extends Model
         'syarat',
         'tgl_selesai',
         'id_ppat',
-        'kode_p',
+        'nip_p',
         'kd_sertifikat',
         'validasi',
         'id_pln'
     ];
+    public function persyaratan()
+{
+    return $this->hasOne(Persyaratan::class, 'no_urut_p', 'no_urut_p');
+}
+
 }

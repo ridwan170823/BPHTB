@@ -5,8 +5,14 @@ use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\WajibPajakController;
+use App\Http\Controllers\ObjekPajakController;
+use App\Http\Controllers\NotarisController;
+use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\PersyaratanController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\api\WajibPajakApiController;
+use App\Http\Controllers\DashboardController;
+
 
 // === AUTH ===
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
@@ -17,13 +23,18 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/', function () {
     if (!Auth::check()) return redirect()->route('login');
 
-    if (Auth::user()->role === 'admin') {
-        return redirect()->route('admin.dashboard');
-    } elseif (Auth::user()->role === 'user') {
-        return redirect()->route('user.dashboard');
-    } else {
-        abort(403); // Role tidak dikenal
-    }
+    $role = Auth::user()->role;
+
+    return match ($role) {
+        'admin' => redirect()->route('admin.dashboard'),
+        'user' => redirect()->route('user.dashboard'),
+        'notaris' => redirect()->route('notaris.dashboard'),
+        'petugas_pelayanan' => redirect()->route('pelayanan.dashboard'),
+        'kepala_upt' => redirect()->route('kepalaupt.dashboard'),
+        'kasubit_penataan' => redirect()->route('kasubit.dashboard'),
+        'kabit_pendapatan' => redirect()->route('kabit.dashboard'),
+        default => abort(403, 'Role tidak dikenali'),
+    };
 })->name('home');
 
 // === ROUTE UNTUK YANG SUDAH LOGIN ===
@@ -33,22 +44,58 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
 
-        // Resource routes admin
         Route::resource('/wajib-pajak', WajibPajakController::class);
         Route::resource('/objek-pajak', ObjekPajakController::class);
         Route::resource('/transaksi', TransaksiController::class);
         Route::resource('/persyaratan', PersyaratanController::class);
-        Route::resource('/users', UserController::class); // admin/users
+        Route::resource('/users', UserController::class);
     });
 
     // === USER ===
     Route::middleware('role:user')->prefix('user')->name('user.')->group(function () {
         Route::get('/dashboard', fn() => view('user.dashboard'))->name('dashboard');
+    });
 
-        // Tambahkan route khusus user di sini
+    // === NOTARIS ===
+    Route::middleware('role:notaris')->prefix('notaris')->name('notaris.')->group(function () {
+        Route::get('/dashboard', fn() => view('notaris.dashboard'))->name('dashboard');
+      // CRUD Pengajuan dari Notaris (disimpan ke tabel bphtb.pelayanan)
+       Route::resource('pengajuan', NotarisController::class)->parameters([
+        'pengajuan' => 'pengajuan' // nama parameter harus sesuai dengan yang digunakan di controller
+    ]);
+    });
+
+    // === PETUGAS PELAYANAN ===
+    Route::middleware('role:petugas_pelayanan')->prefix('pelayanan')->name('pelayanan.')->group(function () {
+        Route::get('/dashboard', fn() => view('pelayanan.dashboard'))->name('dashboard');
+    });
+
+    // === KEPALA UPT ===
+    Route::middleware('role:kepala_upt')->prefix('kepalaupt')->name('kepalaupt.')->group(function () {
+        Route::get('/dashboard', fn() => view('kepalaupt.dashboard'))->name('dashboard');
+    });
+
+    // === KASUBIT PENATAAN ===
+    Route::middleware('role:kasubit_penataan')->prefix('kasubit')->name('kasubit.')->group(function () {
+        Route::get('/dashboard', fn() => view('kasubit.dashboard'))->name('dashboard');
+    });
+
+    // === KABIT PENDAPATAN ===
+    Route::middleware('role:kabit_pendapatan')->prefix('kabit')->name('kabit.')->group(function () {
+        Route::get('/dashboard', fn() => view('kabit.dashboard'))->name('dashboard');
     });
 
     // === API ===
     Route::get('api/wajibpajak-detail', [WajibPajakApiController::class, 'getDetailByNik']);
     Route::get('api/nik-autocomplete', [WajibPajakApiController::class, 'autocompleteNik']);
+    Route::get('api/autocomplete-nop', [WajibPajakApiController::class, 'autocompleteNop']);
+    Route::post('api/get-data-nop', [WajibPajakApiController::class, 'getDataNop']);
 });
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/realisasi/pbb', [DashboardController::class, 'getRealisasiPbb'])->name('realisasi.pbb');
+Route::get('/realisasi/{jenis}', [DashboardController::class, 'getRealisasi']);
+
+
+
+

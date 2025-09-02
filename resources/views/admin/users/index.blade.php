@@ -32,9 +32,21 @@
                     <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $user->name }}</td>
                     <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ $user->email }}</td>
                     <td class="px-6 py-4">
-                        <span class="inline-block px-2 py-1 text-xs font-medium rounded 
-                            {{ $user->role === 'admin' ? 'bg-blue-100 text-blue-800 dark:bg-blue-200 dark:text-blue-900' : 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-white' }}">
-                            {{ ucfirst($user->role) }}
+                        @php
+                            $badgeColors = [
+                                'admin' => 'bg-blue-100 text-blue-800 dark:bg-blue-200 dark:text-blue-900',
+                                'user' => 'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-white',
+                                'notaris' => 'bg-purple-100 text-purple-800 dark:bg-purple-200 dark:text-purple-900',
+                                'petugas_pelayanan' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-200 dark:text-yellow-900',
+                                'kepala_upt' => 'bg-pink-100 text-pink-800 dark:bg-pink-200 dark:text-pink-900',
+                                'kasubit_penataan' => 'bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900',
+                                'kabit_pendapatan' => 'bg-red-100 text-red-800 dark:bg-red-200 dark:text-red-900',
+                            ];
+                            $label = \App\Models\User::ROLES[$user->role] ?? ucfirst($user->role);
+                            $color = $badgeColors[$user->role] ?? 'bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-white';
+                        @endphp
+                        <span class="inline-block px-2 py-1 text-xs font-medium rounded {{ $color }}">
+                            {{ $label }}
                         </span>
                     </td>
                     <td class="px-6 py-4">
@@ -60,6 +72,7 @@
     </div>
 </div>
 @endsection
+
 @section('styles')
 <style>
     /* Sesuaikan tampilan DataTables agar konsisten dengan Tailwind */
@@ -71,24 +84,24 @@
 
     .dataTables_wrapper .dataTables_length select,
     .dataTables_wrapper .dataTables_filter input {
-        border: 1px solid #d1d5db; /* border-gray-300 */
-        border-radius: 0.375rem; /* rounded-md */
-        padding: 0.5rem 0.75rem; /* py-2 px-3 */
-        font-size: 0.875rem; /* text-sm */
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
         margin-left: 0.5rem;
     }
 
     .dataTables_wrapper .dataTables_length,
     .dataTables_wrapper .dataTables_filter {
         margin-bottom: 1rem;
-        font-size: 0.875rem; /* text-sm */
+        font-size: 0.875rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
 
     .dataTables_wrapper .dataTables_info {
-        font-size: 0.875rem; /* text-sm */
+        font-size: 0.875rem;
         padding: 0.5rem 1rem;
     }
 
@@ -107,18 +120,16 @@
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background-color: #3b82f6; /* blue-500 */
+        background-color: #3b82f6;
         color: white !important;
         border-color: #3b82f6;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        background-color: #e5e7eb; /* gray-200 */
+        background-color: #e5e7eb;
     }
 </style>
 @endsection
-
-
 
 @section('scripts')
 <script>

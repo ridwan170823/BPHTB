@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\WajibPajak;
 use Illuminate\Http\Request;
-
 class WajibPajakController extends Controller
 {
     // Tampilkan semua data
