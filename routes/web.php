@@ -12,6 +12,10 @@ use App\Http\Controllers\PersyaratanController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\api\WajibPajakApiController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PetugasPelayananController;
+use App\Http\Controllers\KepalaUptController;
+use App\Http\Controllers\KasubitController;
+use App\Http\Controllers\KabitController;
 
 
 // === AUTH ===
@@ -67,22 +71,30 @@ Route::middleware(['auth'])->group(function () {
 
     // === PETUGAS PELAYANAN ===
     Route::middleware('role:petugas_pelayanan')->prefix('pelayanan')->name('pelayanan.')->group(function () {
-        Route::get('/dashboard', fn() => view('pelayanan.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [PetugasPelayananController::class, 'index'])->name('dashboard');
+        Route::post('{pelayanan}/approve', [PetugasPelayananController::class, 'approve'])->name('approve');
+        Route::post('{pelayanan}/reject', [PetugasPelayananController::class, 'reject'])->name('reject');
     });
 
     // === KEPALA UPT ===
     Route::middleware('role:kepala_upt')->prefix('kepalaupt')->name('kepalaupt.')->group(function () {
-        Route::get('/dashboard', fn() => view('kepalaupt.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [KepalaUptController::class, 'index'])->name('dashboard');
+        Route::post('{pelayanan}/approve', [KepalaUptController::class, 'approve'])->name('approve');
+        Route::post('{pelayanan}/reject', [KepalaUptController::class, 'reject'])->name('reject');
     });
 
     // === KASUBIT PENATAAN ===
     Route::middleware('role:kasubit_penataan')->prefix('kasubit')->name('kasubit.')->group(function () {
-        Route::get('/dashboard', fn() => view('kasubit.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [KepalaUptController::class, 'index'])->name('dashboard');
+        Route::post('{pelayanan}/approve', [KepalaUptController::class, 'approve'])->name('approve');
+        Route::post('{pelayanan}/reject', [KepalaUptController::class, 'reject'])->name('reject');
     });
 
     // === KABIT PENDAPATAN ===
     Route::middleware('role:kabit_pendapatan')->prefix('kabit')->name('kabit.')->group(function () {
-        Route::get('/dashboard', fn() => view('kabit.dashboard'))->name('dashboard');
+        Route::get('/dashboard', [KabitController::class, 'index'])->name('dashboard');
+        Route::post('{pelayanan}/approve', [KabitController::class, 'approve'])->name('approve');
+        Route::post('{pelayanan}/reject', [KabitController::class, 'reject'])->name('reject');
     });
 
     // === API ===
@@ -92,7 +104,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('api/get-data-nop', [WajibPajakApiController::class, 'getDataNop']);
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/realisasi/pbb', [DashboardController::class, 'getRealisasiPbb'])->name('realisasi.pbb');
 Route::get('/realisasi/{jenis}', [DashboardController::class, 'getRealisasi']);
 

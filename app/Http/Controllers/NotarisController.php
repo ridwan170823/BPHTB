@@ -139,7 +139,7 @@ public function store(Request $request)
             'no_urut' => $no_urut,
             'kd_jns_op' => $kd_jns_op,
 
-            'status' => 'Diajukan',
+            'status' => Pelayanan::STATUS_DIAJUKAN,
             'validasi' => 0,
         ]);
 

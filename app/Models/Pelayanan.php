@@ -5,7 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Pelayanan extends Model
-{
+{   
+    public const STATUS_DIAJUKAN = 'DIAJUKAN';
+    public const STATUS_VERIFIKASI_PELAYANAN = 'VERIFIKASI_PELAYANAN';
+    public const STATUS_DITOLAK_PELAYANAN = 'DITOLAK_PELAYANAN';
+    public const STATUS_SETUJU_PELAYANAN = 'SETUJU_PELAYANAN';
+    public const STATUS_VERIFIKASI_KEPALA_UPT = 'VERIFIKASI_KEPALA_UPT';
+    public const STATUS_DITOLAK_KEPALA_UPT = 'DITOLAK_KEPALA_UPT';
+    public const STATUS_SETUJU_KEPALA_UPT = 'SETUJU_KEPALA_UPT';
+    public const STATUS_VERIFIKASI_KASUBIT = 'VERIFIKASI_KASUBIT';
+    public const STATUS_DITOLAK_KASUBIT = 'DITOLAK_KASUBIT';
+    public const STATUS_SETUJU_KASUBIT = 'SETUJU_KASUBIT';
+    public const STATUS_VERIFIKASI_KABIT = 'VERIFIKASI_KABIT';
+    public const STATUS_DITOLAK_KABIT = 'DITOLAK_KABIT';
+    public const STATUS_SETUJU_KABIT = 'SETUJU_KABIT';
+
     protected $table = 'bphtb.pelayanan'; // Akses schema bphtb
     protected $primaryKey = 'no_urut_p';  // Primary key sesuai struktur
     public $incrementing = false;         // Karena tipe varchar, bukan integer auto increment
@@ -40,6 +54,7 @@ class Pelayanan extends Model
         'noppok',
         'pokok_pajak',
         'status',
+        'catatan_penolakan',
         'ket',
         'harga_trk',
         'kelurahan_op',
@@ -58,8 +73,12 @@ class Pelayanan extends Model
         'id_pln'
     ];
     public function persyaratan()
-{
+    {
     return $this->hasOne(Persyaratan::class, 'no_urut_p', 'no_urut_p');
-}
+    }
+    public function statusLogs()
+    {
+        return $this->hasMany(PelayananStatusLog::class, 'pelayanan_id', 'no_urut_p');
+    }
 
 }
