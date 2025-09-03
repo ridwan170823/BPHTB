@@ -47,13 +47,7 @@
         <!-- Main content -->
         <div class="flex-1 flex flex-col w-0 md:ml-64 transition-all duration-300 ease-in-out">
 
-            <!-- Mobile Navbar -->
-            <div class="md:hidden p-4 bg-white shadow flex items-center justify-between">
-                <button onclick="toggleSidebar()" class="text-gray-700 hover:text-blue-600">
-                    <i class="bi bi-list text-2xl"></i>
-                </button>
-                <span class="text-lg font-bold">BPHTB</span>
-            </div>
+           
 
             <!-- Page Content -->
 @include('layouts.header')
