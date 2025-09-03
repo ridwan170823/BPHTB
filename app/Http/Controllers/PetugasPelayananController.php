@@ -10,8 +10,22 @@ class PetugasPelayananController extends Controller
 {
     public function index()
     {
-         $pengajuans = Pelayanan::where('status', Pelayanan::STATUS_DIAJUKAN)
+          $pengajuans = Pelayanan::whereIn('status', [
+                Pelayanan::STATUS_DIAJUKAN,
+                Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
+            ])
             ->paginate();
+
+        foreach ($pengajuans as $pengajuan) {
+            if ($pengajuan->status === Pelayanan::STATUS_DIAJUKAN) {
+                $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN]);
+                $pengajuan->statusLogs()->create([
+                    'status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
+                    'user_id' => Auth::id(),
+                    'created_at' => now(),
+                ]);
+            }
+        }
         return view('pelayanan.dashboard', compact('pengajuans'));
     }
 

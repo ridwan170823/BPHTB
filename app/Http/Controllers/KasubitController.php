@@ -10,8 +10,22 @@ class KasubitController extends Controller
 {
     public function index()
     {
-        $pengajuans = Pelayanan::where('status', Pelayanan::STATUS_SETUJU_KEPALA_UPT)
+        $pengajuans = Pelayanan::whereIn('status', [
+                Pelayanan::STATUS_SETUJU_KEPALA_UPT,
+                Pelayanan::STATUS_VERIFIKASI_KASUBIT,
+            ])
             ->paginate();
+
+        foreach ($pengajuans as $pengajuan) {
+            if ($pengajuan->status === Pelayanan::STATUS_SETUJU_KEPALA_UPT) {
+                $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_KASUBIT]);
+                $pengajuan->statusLogs()->create([
+                    'status' => Pelayanan::STATUS_VERIFIKASI_KASUBIT,
+                    'user_id' => Auth::id(),
+                    'created_at' => now(),
+                ]);
+            }
+        }
         return view('kasubit.dashboard', compact('pengajuans'));
     }
 
