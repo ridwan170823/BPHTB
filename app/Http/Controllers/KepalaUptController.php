@@ -10,7 +10,8 @@ class KepalaUptController extends Controller
 {
     public function index()
     {
-        $pengajuans = Pelayanan::all();
+        $pengajuans = Pelayanan::where('status', Pelayanan::STATUS_SETUJU_PELAYANAN)
+            ->paginate();
         return view('kepalaupt.dashboard', compact('pengajuans'));
     }
 

@@ -10,7 +10,8 @@ class KasubitController extends Controller
 {
     public function index()
     {
-        $pengajuans = Pelayanan::all();
+        $pengajuans = Pelayanan::where('status', Pelayanan::STATUS_SETUJU_KEPALA_UPT)
+            ->paginate();
         return view('kasubit.dashboard', compact('pengajuans'));
     }
 

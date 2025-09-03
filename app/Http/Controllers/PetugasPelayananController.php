@@ -10,7 +10,8 @@ class PetugasPelayananController extends Controller
 {
     public function index()
     {
-        $pengajuans = Pelayanan::all();
+         $pengajuans = Pelayanan::where('status', Pelayanan::STATUS_DIAJUKAN)
+            ->paginate();
         return view('pelayanan.dashboard', compact('pengajuans'));
     }
 
