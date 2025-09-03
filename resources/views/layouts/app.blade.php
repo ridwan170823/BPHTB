@@ -56,19 +56,11 @@
             </div>
 
             <!-- Page Content -->
-<main class="flex-1 p-6 overflow-auto">
-    @php
-        $segments = explode('-', str_replace('_', ' ', request()->segment(1)));
-        $title = collect($segments)->map(fn($s) => ucfirst($s))->implode(' ');
-    @endphp
-
-    <div class="bg-gray p-5 rounded-lg shadow mb-6 border border-gray-200">
-        <h1 class="text-2xl font-bold text-gray-800">{{ $title }}</h1>
-        <p class="text-sm text-gray-500 mt-1">Selamat datang di halaman {{ strtolower($title) }}.</p>
-    </div>
-
-    @yield('content')
-</main>
+@include('layouts.header')
+            <main class="flex-1 p-6 overflow-auto">
+                @yield('content')
+            </main>
+            @include('layouts.footer')
         </div>
     </div>
 
