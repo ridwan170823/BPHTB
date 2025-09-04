@@ -28,6 +28,12 @@ class KepalaUptController extends Controller
         }
         return view('kepalaupt.dashboard', compact('pengajuans'));
     }
+     public function show(Pelayanan $pelayanan)
+    {
+        $pelayanan->load(['persyaratan', 'statusLogs']);
+
+        return view('pelayanan.show', compact('pelayanan'));
+    }
 
     public function approve(Pelayanan $pelayanan)
     {

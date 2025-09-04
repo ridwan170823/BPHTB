@@ -41,6 +41,7 @@
                             <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $pengajuan->no_urut_p }}</td>
                             <td class="px-6 py-4">{{ $statusLabels[$pengajuan->status] ?? $pengajuan->status }}</td>
                             <td class="px-6 py-4">
+                                 <a href="{{ route('kasubit.show', $pengajuan->no_urut_p) }}" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded">Detail</a>
                                 <form action="{{ route('kasubit.approve', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
                                     @csrf
                                     <button type="submit" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded">Setuju</button>

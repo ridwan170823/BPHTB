@@ -28,7 +28,12 @@ class PetugasPelayananController extends Controller
         }
         return view('pelayanan.dashboard', compact('pengajuans'));
     }
+    public function show(Pelayanan $pelayanan)
+    {
+        $pelayanan->load(['persyaratan', 'statusLogs']);
 
+        return view('pelayanan.show', compact('pelayanan'));
+    }
     public function approve(Pelayanan $pelayanan)
     {
         $pelayanan->update([
