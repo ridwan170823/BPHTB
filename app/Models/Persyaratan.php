@@ -28,9 +28,10 @@ class Persyaratan extends Model
         's_permohonan',
         's_pernyataan',
         'b_p_pln',
+        'no_urut_p',
     ];
     public function pelayanan()
-{
+    {
     return $this->belongsTo(Pelayanan::class, 'no_urut_p', 'no_urut_p');
-}
+    }
 }
