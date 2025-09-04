@@ -6,7 +6,6 @@ use App\Models\Pelayanan;
 use App\Models\Persyaratan;
 use App\Models\WajibPajak;
 use App\Models\Ppat;
-use App\Models\PelayananStatusLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -165,6 +164,11 @@ public function store(Request $request)
         }
 
         Persyaratan::create($persyaratanData);
+        $pelayanan->statusLogs()->create([
+            'status' => Pelayanan::STATUS_DIAJUKAN,
+            'user_id' => Auth::id(),
+            'created_at' => now(),
+        ]);
 
         return redirect()->route('notaris.pengajuan.index')->with('success', 'Pengajuan & berkas persyaratan berhasil disimpan.');
     } catch (\Exception $e) {
@@ -309,8 +313,7 @@ public function store(Request $request)
                 $pengajuan->catatan_penolakan = null;
                 $pengajuan->save();
 
-                PelayananStatusLog::create([
-                    'pelayanan_id' => $pengajuan->no_urut_p,
+               $pengajuan->statusLogs()->create([
                     'status' => Pelayanan::STATUS_DIAJUKAN,
                     'user_id' => Auth::id(),
                     'catatan' => 'Pengajuan diajukan ulang oleh notaris',
