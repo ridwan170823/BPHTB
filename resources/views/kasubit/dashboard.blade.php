@@ -4,7 +4,7 @@
     <h1>Dashboard Kasubit</h1>
     <p>Selamat datang, {{ auth()->user()->name }}!</p>
     <div class="p-6">
-        <h1 class="text-2xl font-bold mb-4">Dashboard Kabit</h1>
+        <h1 class="text-2xl font-bold mb-4">Dashboard Kasubit</h1>
         <p class="mb-6">Selamat datang, {{ auth()->user()->name }}!</p>
 
         @php
@@ -41,11 +41,11 @@
                             <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $pengajuan->no_urut_p }}</td>
                             <td class="px-6 py-4">{{ $statusLabels[$pengajuan->status] ?? $pengajuan->status }}</td>
                             <td class="px-6 py-4">
-                                <form action="{{ route('kabit.approve', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
+                                <form action="{{ route('kasubit.approve', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
                                     @csrf
                                     <button type="submit" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded">Setuju</button>
                                 </form>
-                                <form action="{{ route('kabit.reject', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
+                                <form action="{{ route('kasubit.reject', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
                                     @csrf
                                     <input type="text" name="catatan" placeholder="Catatan penolakan" class="border rounded px-2 py-1 text-xs">
                                     <button type="submit" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded">Tolak</button>
