@@ -18,7 +18,7 @@
             <label>Alamat</label>
             <textarea name="alamat" class="form-textarea w-full" required>{{ $wajibPajak->alamat }}</textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Update</button>
     </form>
 </div>
 @endsection
