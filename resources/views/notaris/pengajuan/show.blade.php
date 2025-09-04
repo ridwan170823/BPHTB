@@ -35,6 +35,10 @@
             <td class="font-medium border p-2">Status</td>
             <td class="border p-2">{{ ucfirst($pengajuan->status) }}</td>
         </tr>
+         <tr>
+            <td class="font-medium border p-2">Catatan Penolakan</td>
+            <td class="border p-2">{{ $pengajuan->catatan_penolakan ?? '-' }}</td>
+        </tr>
         {{-- Tambahkan informasi lain sesuai kebutuhan --}}
     </table>
 

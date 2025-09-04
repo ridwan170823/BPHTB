@@ -28,6 +28,7 @@
                     <th class="px-4 py-3 text-left">Harga Transaksi</th>
                     <th class="px-4 py-3 text-left">Tanggal Verifikasi</th>
                     <th class="px-4 py-3 text-left">Status</th>
+                     <th class="px-4 py-3 text-left">Catatan Penolakan</th>
                     <th class="px-4 py-3 text-left">Aksi</th>
                 </tr>
             </thead>
@@ -53,6 +54,7 @@
                         <td class="px-4 py-2 text-gray-800 dark:text-gray-100">Rp {{ is_numeric($item->harga_trk) ? number_format($item->harga_trk, 0, ',', '.') : '-' }}</td>
                         <td class="px-4 py-2 text-gray-800 dark:text-gray-100">{{ $item->tgl_verifikasi ?? '-' }}</td>
                         <td class="px-4 py-2 text-gray-800 dark:text-gray-100">{{ $item->status ?? '-' }}</td>
+                         <td class="px-4 py-2 text-gray-800 dark:text-gray-100">{{ $item->catatan_penolakan ?? '-' }}</td>
                         <td class="px-4 py-2 whitespace-nowrap">
                             <a href="{{ route('notaris.pengajuan.show', $item->no_urut_p) }}"
                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">Lihat</a>
@@ -67,7 +69,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-gray-500 dark:text-gray-400">Tidak ada data tersedia.</td>
+                        <td colspan="9" class="text-center py-4 text-gray-500 dark:text-gray-400">Tidak ada data tersedia.</td>
                     </tr>
                 @endforelse
             </tbody>
