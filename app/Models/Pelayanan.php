@@ -22,6 +22,7 @@ class Pelayanan extends Model
 
     protected $table = 'bphtb.pelayanan'; // Akses schema bphtb
     protected $primaryKey = 'no_urut_p';  // Primary key sesuai struktur
+    protected $keyType = 'string';
     public $incrementing = false;         // Karena tipe varchar, bukan integer auto increment
     public $timestamps = false;           // Tidak ada created_at & updated_at
 
