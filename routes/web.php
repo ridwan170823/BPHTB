@@ -85,9 +85,9 @@ Route::middleware(['auth'])->group(function () {
 
     // === KASUBIT PENATAAN ===
     Route::middleware('role:kasubit_penataan')->prefix('kasubit')->name('kasubit.')->group(function () {
-        Route::get('/dashboard', [KepalaUptController::class, 'index'])->name('dashboard');
-        Route::post('{pelayanan}/approve', [KepalaUptController::class, 'approve'])->name('approve');
-        Route::post('{pelayanan}/reject', [KepalaUptController::class, 'reject'])->name('reject');
+        Route::get('/dashboard', [KasubitController::class, 'index'])->name('dashboard');
+        Route::post('{pelayanan}/approve', [KasubitController::class, 'approve'])->name('approve');
+        Route::post('{pelayanan}/reject', [KasubitController::class, 'reject'])->name('reject');
     });
 
     // === KABIT PENDAPATAN ===
