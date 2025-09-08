@@ -21,11 +21,12 @@ class NotarisController extends Controller
     $pengajuans = Pelayanan::where('id_ppat', $idPpat)->get();
 
     // Cek isi datanya
+    $message = null;
     if ($pengajuans->isEmpty()) {
-        dd('Data kosong untuk id_ppat:', $idPpat);
+        $message = 'Belum ada pengajuan untuk PPAT ini.';
     }
 
-    return view('notaris.pengajuan.index', compact('pengajuans'));
+     return view('notaris.pengajuan.index', compact('pengajuans', 'message'));
 }
 
     public function create()

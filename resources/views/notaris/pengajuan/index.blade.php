@@ -10,6 +10,12 @@
         </div>
     @endif
 
+     @isset($message)
+        <div class="mb-4 p-3 bg-blue-100 text-blue-800 rounded">
+            {{ $message }}
+        </div>
+    @endisset
+
     <div class="flex items-center justify-between mb-6">
         <a href="{{ route('notaris.pengajuan.create') }}"
            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition">
