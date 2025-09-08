@@ -2,8 +2,13 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Dashboard</title>
+    @php
+        $segments = explode('-', str_replace('_', ' ', request()->segment(1)));
+        $pageTitle = collect($segments)->map(fn($s) => ucfirst($s))->implode(' ');
+    @endphp
+    <title>@yield('title', $pageTitle ?: 'Dashboard')</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,7 +55,7 @@
            
 
             <!-- Page Content -->
-@include('layouts.header')
+@include('layouts.header', ['title' => $pageTitle])
             <main class="flex-1 p-6 overflow-auto">
                 @yield('content')
             </main>

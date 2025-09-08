@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pelayanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\PelayananRejected;
 
 class KasubitController extends Controller
 {
@@ -65,6 +66,8 @@ class KasubitController extends Controller
             'catatan' => $request->catatan,
             'created_at' => now(),
         ]);
+
+         event(new PelayananRejected($pelayanan));
 
         return back();
     }
