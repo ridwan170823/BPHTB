@@ -10,5 +10,8 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\PelayananRejected::class => [
             \App\Listeners\SendRejectionNotification::class,
         ],
+        \App\Events\PelayananApproved::class => [
+            \App\Listeners\SendApprovalNotification::class,
+        ],
     ];
 }

@@ -6,6 +6,7 @@ use App\Models\Pelayanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\PelayananRejected;
+use App\Events\PelayananApproved;
 
 class KabitController extends Controller
 {
@@ -49,6 +50,8 @@ class KabitController extends Controller
             'created_at' => now(),
         ]);
 
+        event(new PelayananApproved($pelayanan));
+
         return back();
     }
 
@@ -66,7 +69,7 @@ class KabitController extends Controller
             'catatan' => $request->catatan,
             'created_at' => now(),
         ]);
-        
+
         event(new PelayananRejected($pelayanan));
 
         return back();
