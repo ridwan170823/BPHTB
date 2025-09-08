@@ -64,8 +64,13 @@
                         <td class="px-4 py-2 whitespace-nowrap">
                             <a href="{{ route('notaris.pengajuan.show', $item->no_urut_p) }}"
                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">Lihat</a>
-                            <a href="{{ route('notaris.pengajuan.edit', $item->no_urut_p) }}"
-                               class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">Edit</a>
+                             @if (\Illuminate\Support\Str::startsWith($item->status, 'DITOLAK'))
+                                <a href="{{ route('notaris.pengajuan.edit', $item->no_urut_p) }}"
+                                   class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">Ajukan Ulang</a>
+                            @else
+                                <a href="{{ route('notaris.pengajuan.edit', $item->no_urut_p) }}"
+                                   class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm">Edit</a>
+                            @endif
                             <form action="{{ route('notaris.pengajuan.destroy', $item->no_urut_p) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                                 @csrf
                                 @method('DELETE')

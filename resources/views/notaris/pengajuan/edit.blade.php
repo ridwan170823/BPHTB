@@ -2,13 +2,13 @@
 
 @section('content')
 <div class="p-6 max-w-4xl mx-auto bg-white shadow rounded">
-    <h1 class="text-xl font-semibold mb-4">Edit Pengajuan</h1>
 
     @if ($pengajuan->catatan_penolakan)
         <div class="mb-4 p-3 bg-red-100 text-red-800 rounded">
-            {{ $pengajuan->catatan_penolakan }}
+           <strong>Catatan Penolakan:</strong> {{ $pengajuan->catatan_penolakan }}
         </div>
     @endif
+    <h1 class="text-xl font-semibold mb-4">Edit Pengajuan</h1>
 
     @if ($errors->any())
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
