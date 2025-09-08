@@ -103,7 +103,14 @@ public function store(Request $request)
         $kd_jns_op     = str_pad(substr($nopRaw, 17, 1), 1, '0', STR_PAD_LEFT);
 
         $tahun = date('Y');
-        $no_urut_p = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+       // Ambil nomor urut terakhir berdasarkan tahun berjalan
+        $lastNumber = Pelayanan::where('tahun', $tahun)
+            ->orderByDesc('no_urut_p')
+            ->value('no_urut_p');
+
+        // Jika belum ada data pada tahun tersebut mulai dari 1
+        $nextNumber = $lastNumber ? ((int) $lastNumber + 1) : 1;
+        $no_urut_p  = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
         // Simpan ke tabel pelayanan
         $pelayanan = Pelayanan::create([
