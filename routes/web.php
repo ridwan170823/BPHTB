@@ -63,11 +63,11 @@ Route::middleware(['auth'])->group(function () {
 
     // === NOTARIS ===
     Route::middleware('role:notaris')->prefix('notaris')->name('notaris.')->group(function () {
-        Route::get('/dashboard', fn() => view('notaris.dashboard'))->name('dashboard');
-      // CRUD Pengajuan dari Notaris (disimpan ke tabel bphtb.pelayanan)
-       Route::resource('pengajuan', NotarisController::class)->parameters([
-        'pengajuan' => 'pengajuan' // nama parameter harus sesuai dengan yang digunakan di controller
-    ]);
+        Route::get('/dashboard', [NotarisController::class, 'dashboard'])->name('dashboard');
+        Route::get('/riwayat', [NotarisController::class, 'riwayat'])->name('riwayat');
+        Route::resource('pengajuan', NotarisController::class)->parameters([
+            'pengajuan' => 'pengajuan'
+        ]);
     });
 
     // === PETUGAS PELAYANAN ===

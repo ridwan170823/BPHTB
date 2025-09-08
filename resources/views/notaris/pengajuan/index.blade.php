@@ -28,6 +28,7 @@
             <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 uppercase text-xs font-bold">
                 <tr>
                     <th class="px-4 py-3 text-left">No</th>
+                    <th class="px-4 py-3 text-left">No Urut Surat</th>
                     <th class="px-4 py-3 text-left">NOP</th>
                     <th class="px-4 py-3 text-left">Nama SPPT</th>
                     <th class="px-4 py-3 text-left">Alamat OP</th>
@@ -42,6 +43,7 @@
                 @forelse ($pengajuans as $item)
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                         <td class="px-4 py-2 text-gray-800 dark:text-gray-100">{{ $loop->iteration }}</td>
+                        <td class="px-4 py-3">{{ $item->no_urut_p }}</td>
                         {{-- Format NOP dari 7 kolom --}}
                         <td class="px-4 py-2 text-gray-800 dark:text-gray-100">
                             {{

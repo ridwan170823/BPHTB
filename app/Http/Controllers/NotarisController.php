@@ -14,20 +14,49 @@ use Illuminate\Support\Facades\Storage;
 
 class NotarisController extends Controller
 {
-     // Tampilkan semua data
-    public function index()
-{
-    $idPpat = Auth::user()->id_ppat;
-    $pengajuans = Pelayanan::where('id_ppat', $idPpat)->get();
+   // Dashboard Notaris
+    public function dashboard()
+    {
+        $idPpat = Auth::user()->id_ppat;
+        $totalPengajuan = Pelayanan::where('id_ppat', $idPpat)->count();
+        $pengajuanDiterima = Pelayanan::where('id_ppat', $idPpat)
+            ->where('status', Pelayanan::STATUS_SETUJU_KABIT)
+            ->count();
+        $pengajuanDitolak = Pelayanan::where('id_ppat', $idPpat)
+            ->where('status', 'LIKE', 'DITOLAK%')
+            ->count();
 
-    // Cek isi datanya
-    $message = null;
-    if ($pengajuans->isEmpty()) {
-        $message = 'Belum ada pengajuan untuk PPAT ini.';
+        return view('notaris.dashboard', compact('totalPengajuan', 'pengajuanDiterima', 'pengajuanDitolak'));
     }
 
-     return view('notaris.pengajuan.index', compact('pengajuans', 'message'));
-}
+    public function riwayat()
+    {
+        $idPpat = Auth::user()->id_ppat;
+        $pengajuans = Pelayanan::where('id_ppat', $idPpat)->get();
+
+        $message = null;
+        if ($pengajuans->isEmpty()) {
+            $message = 'Belum ada pengajuan untuk PPAT ini.';
+        }
+
+        return view('notaris.riwayat', compact('pengajuans', 'message'));
+    }
+
+
+     // Tampilkan semua data
+    public function index()
+    {
+        $idPpat = Auth::user()->id_ppat;
+        $pengajuans = Pelayanan::where('id_ppat', $idPpat)->get();
+
+        // Cek isi datanya
+        $message = null;
+        if ($pengajuans->isEmpty()) {
+            $message = 'Belum ada pengajuan untuk PPAT ini.';
+        }
+
+        return view('notaris.pengajuan.index', compact('pengajuans', 'message'));
+    }
 
     public function create()
 {
