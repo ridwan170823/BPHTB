@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Menu;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -12,7 +12,9 @@ class MenuController extends Controller
      */
     public function index()
     {
-        //
+        $menus = Menu::orderBy('order')->get();
+
+        return view('admin.menus.index', compact('menus'));
     }
 
     /**
@@ -20,7 +22,7 @@ class MenuController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.menus.create');
     }
 
     /**
@@ -28,38 +30,57 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'url' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:255',
+            'role' => 'required|string',
+            'order' => 'nullable|integer',
+        ]);
+    
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
+    Menu::create($data);
+
+        return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil ditambahkan');
     }
+    
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Menu $menu)
     {
-        //
+        return view('admin.menus.edit', compact('menu'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+     public function update(Request $request, Menu $menu)
     {
-        //
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'url' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:255',
+            'role' => 'required|string',
+            'order' => 'nullable|integer',
+        ]);
+
+        $menu->update($data);
+
+        return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil diperbarui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Menu $menu)
     {
-        //
+        $menu->delete();
+
+        return redirect()->route('admin.menus.index')->with('success', 'Menu berhasil dihapus');
     }
 }

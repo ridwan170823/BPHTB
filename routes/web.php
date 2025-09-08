@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/objek-pajak', ObjekPajakController::class);
         Route::resource('/transaksi', TransaksiController::class);
         Route::resource('/persyaratan', PersyaratanController::class);
+        Route::resource('/menus', MenuController::class);
         Route::resource('/users', UserController::class);
     });
 
