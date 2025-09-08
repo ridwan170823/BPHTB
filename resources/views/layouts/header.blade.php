@@ -22,7 +22,7 @@
                         <span class="absolute -top-1 -right-1 inline-flex items-center justify-center px-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">{{ Auth::user()->unreadNotifications->count() }}</span>
                     @endif
                 </button>
-                <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-md shadow-lg max-h-64 overflow-y-auto">
+                 <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-md ring-1 ring-black ring-opacity-5 max-h-64 overflow-y-auto transform transition origin-top-right scale-95 opacity-0">
                     @forelse(Auth::user()->notifications as $notification)
                         <div class="px-4 py-2 hover:bg-gray-100">
                             <span class="text-sm text-gray-700">{{ $notification->data['message'] ?? '' }}</span>
@@ -47,9 +47,17 @@
             const button = document.getElementById('notificationButton');
             const dropdown = document.getElementById('notificationDropdown');
             if (button && button.contains(event.target)) {
-                dropdown.classList.toggle('hidden');
+               const isHidden = dropdown.classList.contains('hidden');
+                if (isHidden) {
+                    dropdown.classList.remove('hidden', 'scale-95', 'opacity-0');
+                    dropdown.classList.add('scale-100', 'opacity-100', 'shadow-lg');
+                } else {
+                    dropdown.classList.add('hidden', 'scale-95', 'opacity-0');
+                    dropdown.classList.remove('scale-100', 'opacity-100', 'shadow-lg');
+                }
             } else if (dropdown && !dropdown.contains(event.target)) {
-                dropdown.classList.add('hidden');
+               dropdown.classList.add('hidden', 'scale-95', 'opacity-0');
+                dropdown.classList.remove('scale-100', 'opacity-100', 'shadow-lg');
             }
         });
     </script>
