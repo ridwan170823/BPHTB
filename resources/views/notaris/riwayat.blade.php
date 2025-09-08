@@ -25,7 +25,7 @@
                 @forelse($pengajuans as $pengajuan)
                     <tr>
                         <td class="px-4 py-3">{{ $loop->iteration }}</td>
-                         <td class="px-4 py-3">{{ $pengajuan->no_urut_p }}</td>
+                        <td class="px-4 py-3">{{ $pengajuan->no_urut_p }}</td>
                         {{-- Format NOP dari 7 kolom --}}
                         <td class="px-4 py-2 text-gray-800 dark:text-gray-100">
                             {{
@@ -39,7 +39,9 @@
                             }}
                         </td>
                         <td class="px-4 py-3">{{ $pengajuan->nama_sppt }}</td>
-                        <td class="px-4 py-3">{{ $pengajuan->status }}</td>
+                        <td class="px-4 py-3">
+                            <x-status-badge :status="$pengajuan->status" />
+                        </td>
                     </tr>
                 @empty
                     <tr>
