@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\Auth;
 
 class NotaryProfileController extends Controller
 {
+     public function index(Request $request)
+    {
+        $profile = NotaryProfile::firstOrNew(['user_id' => Auth::id()]);
+
+        if ($request->wantsJson()) {
+            return response()->json($profile);
+        }
+
+        return view('notaris.profile.index', compact('profile'));
+    }
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -19,7 +29,11 @@ class NotaryProfileController extends Controller
             $data
         );
 
-        return response()->json($profile, 201);
+       if ($request->wantsJson()) {
+            return response()->json($profile, 201);
+        }
+
+        return redirect()->route('notaris.profile.index');
     }
 
     public function verify(Request $request, NotaryProfile $profile)
@@ -39,6 +53,10 @@ class NotaryProfileController extends Controller
             'verified_at' => now(),
         ]);
 
-        return response()->json($profile);
+        if ($request->wantsJson()) {
+            return response()->json($profile);
+        }
+
+        return redirect()->route('notaris.profile.index');
     }
 }

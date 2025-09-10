@@ -8,10 +8,14 @@ use Illuminate\Support\Facades\Auth;
 
 class NotaryDocumentController extends Controller
 {
-    public function index()
+   public function index(Request $request)
     {
         $documents = NotaryDocument::where('user_id', Auth::id())->get();
-        return response()->json($documents);
+       if ($request->wantsJson()) {
+            return response()->json($documents);
+        }
+
+        return view('notaris.documents.index', compact('documents'));
     }
 
     public function store(Request $request)
@@ -29,6 +33,10 @@ class NotaryDocumentController extends Controller
             'path' => $path,
         ]);
 
-        return response()->json($document, 201);
+         if ($request->wantsJson()) {
+            return response()->json($document, 201);
+        }
+
+        return redirect()->route('notaris.documents.index');
     }
 }

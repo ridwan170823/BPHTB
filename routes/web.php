@@ -9,7 +9,7 @@ use App\Http\Controllers\ObjekPajakController;
 use App\Http\Controllers\NotarisController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\PersyaratanController;
-use App\Http\Controllers\NotarisProfileController;
+use App\Http\Controllers\NotaryProfileController;
 use App\Http\Controllers\NotaryDocumentController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\api\WajibPajakApiController;
@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pengajuan', NotarisController::class)->parameters([
             'pengajuan' => 'pengajuan'
         ]);
+        Route::get('/profile', [NotaryProfileController::class, 'index'])->name('profile.index');
         Route::post('/profile', [NotaryProfileController::class, 'store'])->name('profile.store');
         Route::post('/profile/{profile}/verify', [NotaryProfileController::class, 'verify'])->name('profile.verify');
         Route::get('/documents', [NotaryDocumentController::class, 'index'])->name('documents.index');
