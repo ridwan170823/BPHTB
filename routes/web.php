@@ -9,6 +9,8 @@ use App\Http\Controllers\ObjekPajakController;
 use App\Http\Controllers\NotarisController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\PersyaratanController;
+use App\Http\Controllers\NotarisProfileController;
+use App\Http\Controllers\NotaryDocumentController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\api\WajibPajakApiController;
 use App\Http\Controllers\DashboardController;
@@ -68,6 +70,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pengajuan', NotarisController::class)->parameters([
             'pengajuan' => 'pengajuan'
         ]);
+        Route::post('/profile', [NotaryProfileController::class, 'store'])->name('profile.store');
+        Route::post('/profile/{profile}/verify', [NotaryProfileController::class, 'verify'])->name('profile.verify');
+        Route::get('/documents', [NotaryDocumentController::class, 'index'])->name('documents.index');
+        Route::post('/documents', [NotaryDocumentController::class, 'store'])->name('documents.store');
     });
 
     // === PETUGAS PELAYANAN ===
