@@ -12,6 +12,7 @@
                 <p class="text-sm">Total Pengajuan</p>
                 <p class="text-2xl font-bold">{{ $totalPengajuan }}</p>
             </div>
+</div>
         <div class="p-4 rounded shadow-lg hover:shadow-xl bg-gradient-to-r from-green-500 to-green-700 text-white flex items-center space-x-4">
             <i class="bi bi-check-circle text-3xl"></i>
             <div>
@@ -26,5 +27,6 @@
                 <p class="text-2xl font-bold">{{ $pengajuanDitolak }}</p>
             </div>
         </div>
+</div>
 </div>
 @endsection
