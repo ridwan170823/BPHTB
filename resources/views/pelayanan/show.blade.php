@@ -3,6 +3,7 @@
 @section('content')
 <div class="p-6 max-w-5xl mx-auto bg-white shadow rounded">
     <h1 class="text-xl font-semibold mb-4">Detail Pelayanan</h1>
+    <x-status-timeline :pelayanan="$pelayanan" class="mb-6" />
 
     <table class="table-auto w-full border text-sm mb-6">
         @foreach($pelayanan->getAttributes() as $field => $value)
