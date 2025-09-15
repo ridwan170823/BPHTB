@@ -17,17 +17,30 @@ class KasubitController extends Controller
             ])
             ->paginate();
 
-        foreach ($pengajuans as $pengajuan) {
-            if ($pengajuan->status === Pelayanan::STATUS_SETUJU_KEPALA_UPT) {
-                $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_KASUBIT]);
-                $pengajuan->statusLogs()->create([
-                    'status' => Pelayanan::STATUS_VERIFIKASI_KASUBIT,
-                    'user_id' => Auth::id(),
-                    'created_at' => now(),
-                ]);
-            }
-        }
+        // foreach ($pengajuans as $pengajuan) {
+        //     if ($pengajuan->status === Pelayanan::STATUS_SETUJU_KEPALA_UPT) {
+        //         $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_KASUBIT]);
+        //         $pengajuan->statusLogs()->create([
+        //             'status' => Pelayanan::STATUS_VERIFIKASI_KASUBIT,
+        //             'user_id' => Auth::id(),
+        //             'created_at' => now(),
+        //         ]);
+        //     }
+        // }
         return view('kasubit.dashboard', compact('pengajuans'));
+    }
+    public function startVerification(Pelayanan $pelayanan)
+    {
+        if ($pelayanan->status === Pelayanan::STATUS_SETUJU_KEPALA_UPT) {
+            $pelayanan->update(['status' => Pelayanan::STATUS_VERIFIKASI_KASUBIT]);
+            $pelayanan->statusLogs()->create([
+                'status' => Pelayanan::STATUS_VERIFIKASI_KASUBIT,
+                'user_id' => Auth::id(),
+                'created_at' => now(),
+            ]);
+        }
+
+        return back();
     }
      public function show(Pelayanan $pelayanan)
     {

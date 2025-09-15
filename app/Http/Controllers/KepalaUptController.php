@@ -17,17 +17,30 @@ class KepalaUptController extends Controller
             ])
             ->paginate();
 
-        foreach ($pengajuans as $pengajuan) {
-            if ($pengajuan->status === Pelayanan::STATUS_SETUJU_PELAYANAN) {
-                $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT]);
-                $pengajuan->statusLogs()->create([
-                    'status' => Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT,
-                    'user_id' => Auth::id(),
-                    'created_at' => now(),
-                ]);
-            }
-        }
+        // foreach ($pengajuans as $pengajuan) {
+        //     if ($pengajuan->status === Pelayanan::STATUS_SETUJU_PELAYANAN) {
+        //         $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT]);
+        //         $pengajuan->statusLogs()->create([
+        //             'status' => Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT,
+        //             'user_id' => Auth::id(),
+        //             'created_at' => now(),
+        //         ]);
+        //     }
+        // }
         return view('kepalaupt.dashboard', compact('pengajuans'));
+    }
+    public function startVerification(Pelayanan $pelayanan)
+    {
+        if ($pelayanan->status === Pelayanan::STATUS_SETUJU_PELAYANAN) {
+            $pelayanan->update(['status' => Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT]);
+            $pelayanan->statusLogs()->create([
+                'status' => Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT,
+                'user_id' => Auth::id(),
+                'created_at' => now(),
+            ]);
+        }
+
+        return back();
     }
      public function show(Pelayanan $pelayanan)
     {

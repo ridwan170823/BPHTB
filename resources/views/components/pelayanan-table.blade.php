@@ -17,6 +17,12 @@
         Pelayanan::STATUS_DITOLAK_KABIT => 'Ditolak Kabit',
         Pelayanan::STATUS_SETUJU_KABIT => 'Disetujui Kabit',
     ];
+    $startStatuses = [
+        'pelayanan' => Pelayanan::STATUS_DIAJUKAN,
+        'kepalaupt' => Pelayanan::STATUS_SETUJU_PELAYANAN,
+        'kasubit' => Pelayanan::STATUS_SETUJU_KEPALA_UPT,
+        'kabit' => Pelayanan::STATUS_SETUJU_KASUBIT,
+    ];
 @endphp
 
 <div class="p-6">
@@ -36,17 +42,24 @@
                         <td class="px-6 py-4">{{ $statusLabels[$pengajuan->status] ?? $pengajuan->status }}</td>
                         <td class="px-6 py-4">
                             <a href="{{ route($routePrefix.'.show', $pengajuan->no_urut_p) }}" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded">Detail</a>
-                            <form action="{{ route($routePrefix.'.approve', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
-                                @csrf
-                                <button type="submit" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded">Setuju</button>
-                            </form>
-                            <form action="{{ route($routePrefix.'.reject', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
-                                @csrf
-                                <input type="text" name="catatan" placeholder="Catatan penolakan" class="border rounded px-2 py-1 text-xs">
-                                <button type="submit" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded">Tolak</button>
-                            </form>
-                            @if($pengajuan->catatan_penolakan)
-                                <div class="mt-2 text-xs text-red-500">{{ $pengajuan->catatan_penolakan }}</div>
+                            @if(isset($startStatuses[$routePrefix]) && $pengajuan->status === $startStatuses[$routePrefix])
+                                <form action="{{ route($routePrefix.'.start', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
+                                    @csrf
+                                    <button type="submit" class="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-semibold rounded">Mulai Verifikasi</button>
+                                </form>
+                            @else
+                                <form action="{{ route($routePrefix.'.approve', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
+                                    @csrf
+                                    <button type="submit" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded">Setuju</button>
+                                </form>
+                                <form action="{{ route($routePrefix.'.reject', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
+                                    @csrf
+                                    <input type="text" name="catatan" placeholder="Catatan penolakan" class="border rounded px-2 py-1 text-xs">
+                                    <button type="submit" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded">Tolak</button>
+                                </form>
+                                @if($pengajuan->catatan_penolakan)
+                                    <div class="mt-2 text-xs text-red-500">{{ $pengajuan->catatan_penolakan }}</div>
+                                @endif
                             @endif
                         </td>
                     </tr>

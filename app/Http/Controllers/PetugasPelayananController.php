@@ -17,17 +17,30 @@ class PetugasPelayananController extends Controller
             ])
             ->paginate();
 
-        foreach ($pengajuans as $pengajuan) {
-            if ($pengajuan->status === Pelayanan::STATUS_DIAJUKAN) {
-                $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN]);
-                $pengajuan->statusLogs()->create([
-                    'status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
-                    'user_id' => Auth::id(),
-                    'created_at' => now(),
-                ]);
-            }
-        }
+        // foreach ($pengajuans as $pengajuan) {
+        //     if ($pengajuan->status === Pelayanan::STATUS_DIAJUKAN) {
+        //         $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN]);
+        //         $pengajuan->statusLogs()->create([
+        //             'status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
+        //             'user_id' => Auth::id(),
+        //             'created_at' => now(),
+        //         ]);
+        //     }
+        // }
         return view('pelayanan.dashboard', compact('pengajuans'));
+    }
+    public function startVerification(Pelayanan $pelayanan)
+    {
+        if ($pelayanan->status === Pelayanan::STATUS_DIAJUKAN) {
+            $pelayanan->update(['status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN]);
+            $pelayanan->statusLogs()->create([
+                'status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
+                'user_id' => Auth::id(),
+                'created_at' => now(),
+            ]);
+        }
+
+        return back();
     }
     public function show(Pelayanan $pelayanan)
     {
