@@ -10,14 +10,31 @@ use App\Events\PelayananStageApproved;
 
 class PetugasPelayananController extends Controller
 {
-    public function index()
+   public function index(Request $request)
     {
-          $pengajuans = Pelayanan::whereIn('status', [
+           $query = Pelayanan::query()
+            ->whereIn('status', [
                 Pelayanan::STATUS_DIAJUKAN,
                 Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
-            ])
-            ->paginate();
+            ]);
+            if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
 
+        if ($request->filled('search')) {
+            $query->where('no_urut_p', 'like', "%{$request->search}%");
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $pengajuans = $query->paginate();
+         
         // foreach ($pengajuans as $pengajuan) {
         //     if ($pengajuan->status === Pelayanan::STATUS_DIAJUKAN) {
         //         $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN]);

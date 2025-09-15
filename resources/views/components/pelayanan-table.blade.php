@@ -26,6 +26,19 @@
 @endphp
 
 <div class="p-6">
+     <form method="GET" action="{{ route($routePrefix.'.dashboard') }}" class="mb-4 flex flex-wrap items-end gap-2">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari No Urut"
+               class="border rounded px-2 py-1 text-xs">
+        <select name="status" class="border rounded px-2 py-1 text-xs">
+            <option value="">Semua Status</option>
+            @foreach($statusLabels as $value => $label)
+                <option value="{{ $value }}" @selected(request('status') == $value)>{{ $label }}</option>
+            @endforeach
+        </select>
+        <input type="date" name="date_from" value="{{ request('date_from') }}" class="border rounded px-2 py-1 text-xs">
+        <input type="date" name="date_to" value="{{ request('date_to') }}" class="border rounded px-2 py-1 text-xs">
+        <button type="submit" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded">Filter</button>
+    </form>
     <div class="overflow-x-auto bg-white dark:bg-gray-800 shadow rounded-xl border border-gray-200 dark:border-gray-700">
         <table id="pengajuanTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-600 text-sm">
             <thead class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-200 uppercase text-xs font-bold">
@@ -67,12 +80,19 @@
             </tbody>
         </table>
     </div>
+     <div class="mt-4">
+        {{ $pengajuans->appends(request()->query())->links() }}
+    </div>
 </div>
 
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('#pengajuanTable').DataTable();
-    });
+        $('#pengajuanTable').DataTable({
+            searching: false,
+            paging: false,
+            info: false
+        });
+         });
 </script>
 @endpush
