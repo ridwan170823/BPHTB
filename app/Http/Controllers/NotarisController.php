@@ -196,7 +196,11 @@ public function store(Request $request)
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
-                $path = $file->storeAs('persyaratan', time() . '_' . $file->getClientOriginalName(), 'public');
+               $path = $file->storeAs(
+                    "persyaratan/{$pelayanan->no_urut_p}",
+                    time() . '_' . $file->getClientOriginalName(),
+                    'public'
+                );
                 $persyaratanData[$field] = $path;
             }
         }
@@ -338,7 +342,11 @@ public function store(Request $request)
                         Storage::disk('public')->delete($pengajuan->persyaratan->$field);
                     }
                     $file = $request->file($field);
-                    $path = $file->storeAs('persyaratan', time() . '_' . $file->getClientOriginalName(), 'public');
+                   $path = $file->storeAs(
+                        "persyaratan/{$pengajuan->no_urut_p}",
+                        time() . '_' . $file->getClientOriginalName(),
+                        'public'
+                    );
                     $persyaratanData[$field] = $path;
                 }
             }
@@ -383,7 +391,7 @@ public function store(Request $request)
             ];
             foreach ($fileFields as $field) {
                 if ($pengajuan->persyaratan->$field) {
-                    Storage::disk('public')->delete($pengajuan->persyaratan->$field);
+                    Storage::disk('public')->deleteDirectory('persyaratan/' . $pengajuan->no_urut_p);
                 }
             }
             $pengajuan->persyaratan->delete();
