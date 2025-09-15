@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Events\PelayananSubmitted;
 
 class NotarisController extends Controller
 {
@@ -207,6 +208,8 @@ public function store(Request $request)
             'created_at' => now(),
         ]);
 
+        event(new PelayananSubmitted($pelayanan));
+
         return redirect()->route('notaris.pengajuan.index')->with('success', 'Pengajuan & berkas persyaratan berhasil disimpan.');
     } catch (\Exception $e) {
         \Log::error('Gagal simpan: ' . $e->getMessage());
@@ -359,6 +362,7 @@ public function store(Request $request)
                     'catatan' => 'Pengajuan diajukan ulang oleh notaris',
                     'created_at' => now(),
                 ]);
+                event(new PelayananSubmitted($pengajuan));
             }
 
             return redirect()->route('notaris.pengajuan.index')->with('success', 'Pengajuan berhasil diperbarui.');

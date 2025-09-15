@@ -6,6 +6,7 @@ use App\Models\Pelayanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\PelayananRejected;
+use App\Events\PelayananStageApproved;
 
 class PetugasPelayananController extends Controller
 {
@@ -60,6 +61,8 @@ class PetugasPelayananController extends Controller
             'user_id' => Auth::id(),
             'created_at' => now(),
         ]);
+        
+        event(new PelayananStageApproved($pelayanan, 'kepala_upt'));
 
         return back();
     }

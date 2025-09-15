@@ -6,6 +6,7 @@ use App\Models\Pelayanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\PelayananRejected;
+use App\Events\PelayananStageApproved;
 
 class KepalaUptController extends Controller
 {
@@ -61,6 +62,7 @@ class KepalaUptController extends Controller
             'user_id' => Auth::id(),
             'created_at' => now(),
         ]);
+        event(new PelayananStageApproved($pelayanan, 'kasubit_penataan'));
 
         return back();
     }
