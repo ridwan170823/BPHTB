@@ -81,5 +81,10 @@ class Pelayanan extends Model
     {
         return $this->hasMany(PelayananStatusLog::class, 'pelayanan_id', 'no_urut_p');
     }
+    public function comments()
+    {
+        return $this->hasMany(PelayananComment::class, 'pelayanan_id', 'no_urut_p')
+            ->orderBy('created_at');
+    }
 
 }

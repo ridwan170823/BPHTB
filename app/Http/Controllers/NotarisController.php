@@ -12,9 +12,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Events\PelayananSubmitted;
+use App\Services\NopParser;
+use App\Services\PelayananNumberService;
 
 class NotarisController extends Controller
 {
+    public function __construct(
+        private readonly NopParser $nopParser,
+        private readonly PelayananNumberService $pelayananNumberService
+    ) {
+    }
    // Dashboard Notaris
     public function dashboard()
     {
@@ -122,65 +129,42 @@ public function store(Request $request)
     ]);
 
     try {
-        // Proses NOP
-        $nopRaw = str_replace('.', '', $request->nop);
-        $kd_propinsi   = str_pad(substr($nopRaw, 0, 2), 2, '0', STR_PAD_LEFT);
-        $kd_dati2      = str_pad(substr($nopRaw, 2, 2), 2, '0', STR_PAD_LEFT);
-        $kd_kecamatan  = str_pad(substr($nopRaw, 4, 3), 3, '0', STR_PAD_LEFT);
-        $kd_kelurahan  = str_pad(substr($nopRaw, 7, 3), 3, '0', STR_PAD_LEFT);
-        $kd_blok       = str_pad(substr($nopRaw, 10, 3), 3, '0', STR_PAD_LEFT);
-        $no_urut       = str_pad(substr($nopRaw, 13, 4), 4, '0', STR_PAD_LEFT);
-        $kd_jns_op     = str_pad(substr($nopRaw, 17, 1), 1, '0', STR_PAD_LEFT);
+       $ppatId = auth()->user()->id_ppat;
+        $nopComponents = $this->nopParser->parse($request->nop);
 
-        $tahun = date('Y');
-       // Ambil nomor urut terakhir berdasarkan tahun berjalan
-        $lastNumber = Pelayanan::where('tahun', $tahun)
-            ->orderByDesc('no_urut_p')
-            ->value('no_urut_p');
-
-        // Jika belum ada data pada tahun tersebut mulai dari 1
-        $nextNumber = $lastNumber ? ((int) $lastNumber + 1) : 1;
-        $no_urut_p  = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
-
-        // Simpan ke tabel pelayanan
-        $pelayanan = Pelayanan::create([
-            'tahun' => $tahun,
-            'no_urut_p' => $no_urut_p,
-            'nik' => $request->nik,
-            'id_ppat' => auth()->user()->id_ppat,
-            'id_transaksi' => str_pad($request->id_transaksi, 2, '0', STR_PAD_LEFT),
-            'nama_sppt' =>$request->nama_sppt,
-            'nip_p' => str_pad($request->kode_p, 2, '0', STR_PAD_LEFT),
-            'harga_trk' => str_replace('.', '', $request->harga_trk),
-            'akumulasi' => str_replace('.', '', $request->akumulasi),
-            'pengurangan' => $request->pengurangan ?? 0,
-            'tgl_verifikasi' => $request->tgl_verifikasi,
-            'tgl_selesai' => $request->tgl_selesai,
-            'ket' => $request->ket,
-            'luas_bumi' => $request->luas_bumi,
-            'luas_bng' => $request->luas_bangunan,
-            'luas_bumi_trk' => $request->luas_bumi_transaksi,
-            'luas_bng_trk' => $request->luas_bangunan_transaksi,
-            'kelurahan_op' => $request->kelurahan_op,
-            'kecamatan_op' => $request->Kecamatan_op,
-            'alamat_op' => $request->letak_op,
-            'nomor_op' => $request->nomor ?? '-',
-            'rt_op' => $request->rt,
-            'rw_op' => $request->rw_op ?? $request->rt,
-            'njop_bumi' => str_replace('.', '', $request->njop_bumi),
-            'njop_bng' => str_replace('.', '', $request->njop_bangunan),
-
-            'kd_propinsi' => $kd_propinsi,
-            'kd_dati2' => $kd_dati2,
-            'kd_kecamatan' => $kd_kecamatan,
-            'kd_kelurahan' => $kd_kelurahan,
-            'kd_blok' => $kd_blok,
-            'no_urut' => $no_urut,
-            'kd_jns_op' => $kd_jns_op,
-
-            'status' => Pelayanan::STATUS_DIAJUKAN,
-            'validasi' => 0,
-        ]);
+        $pelayanan = $this->pelayananNumberService->createWithNextNumber(
+            function (string $tahun, string $noUrutPelayanan) use ($request, $ppatId, $nopComponents) {
+                return Pelayanan::create(array_merge([
+                    'tahun' => $tahun,
+                    'no_urut_p' => $noUrutPelayanan,
+                    'nik' => $request->nik,
+                    'id_ppat' => $ppatId,
+                    'id_transaksi' => str_pad((string) $request->id_transaksi, 2, '0', STR_PAD_LEFT),
+                    'nama_sppt' => $request->nama_sppt,
+                    'nip_p' => str_pad((string) $request->kode_p, 2, '0', STR_PAD_LEFT),
+                    'harga_trk' => str_replace('.', '', (string) $request->harga_trk),
+                    'akumulasi' => str_replace('.', '', (string) $request->akumulasi),
+                    'pengurangan' => $request->pengurangan ?? 0,
+                    'tgl_verifikasi' => $request->tgl_verifikasi,
+                    'tgl_selesai' => $request->tgl_selesai,
+                    'ket' => $request->ket,
+                    'luas_bumi' => $request->luas_bumi,
+                    'luas_bng' => $request->luas_bangunan,
+                    'luas_bumi_trk' => $request->luas_bumi_transaksi,
+                    'luas_bng_trk' => $request->luas_bangunan_transaksi,
+                    'kelurahan_op' => $request->kelurahan_op,
+                    'kecamatan_op' => $request->Kecamatan_op,
+                    'alamat_op' => $request->letak_op,
+                    'nomor_op' => $request->nomor ?? '-',
+                    'rt_op' => $request->rt,
+                    'rw_op' => $request->rw_op ?? $request->rt,
+                    'njop_bumi' => str_replace('.', '', (string) $request->njop_bumi),
+                    'njop_bng' => str_replace('.', '', (string) $request->njop_bangunan),
+                    'status' => Pelayanan::STATUS_DIAJUKAN,
+                    'validasi' => 0,
+                ], $nopComponents));
+            }
+        );
 
         // Simpan berkas persyaratan
         $fileFields = [

@@ -62,8 +62,7 @@ class PetugasPelayananController extends Controller
     }
     public function show(Pelayanan $pelayanan)
     {
-        $pelayanan->load(['persyaratan', 'statusLogs']);
-
+       $pelayanan->load(['persyaratan', 'statusLogs', 'comments.user']);
         return view('pelayanan.show', compact('pelayanan'));
     }
     public function approve(Pelayanan $pelayanan)

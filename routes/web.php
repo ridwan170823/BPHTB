@@ -18,6 +18,7 @@ use App\Http\Controllers\PetugasPelayananController;
 use App\Http\Controllers\KepalaUptController;
 use App\Http\Controllers\KasubitController;
 use App\Http\Controllers\KabitController;
+use App\Http\Controllers\PelayananCommentController;
 
 
 // === AUTH ===
@@ -112,7 +113,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('{pelayanan}/approve', [KabitController::class, 'approve'])->name('approve');
         Route::post('{pelayanan}/reject', [KabitController::class, 'reject'])->name('reject');
     });
-
+    Route::post('/pelayanan/{pelayanan}/comments', [PelayananCommentController::class, 'store'])
+        ->name('pelayanan.comments.store')
+        ->middleware('role:petugas_pelayanan,kepala_upt,kasubit_penataan,kabit_pendapatan');
     // === API ===
     Route::get('api/wajibpajak-detail', [WajibPajakApiController::class, 'getDetailByNik']);
     Route::get('api/nik-autocomplete', [WajibPajakApiController::class, 'autocompleteNik']);

@@ -54,6 +54,38 @@
             @endforelse
         </tbody>
     </table>
+    <h2 class="text-lg font-semibold mb-2 mt-6">Komentar</h2>
+    @php
+        $canComment = match(auth()->user()->role) {
+            'petugas_pelayanan' => $pelayanan->status === \App\Models\Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
+            'kepala_upt' => $pelayanan->status === \App\Models\Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT,
+            'kasubit_penataan' => $pelayanan->status === \App\Models\Pelayanan::STATUS_VERIFIKASI_KASUBIT,
+            'kabit_pendapatan' => $pelayanan->status === \App\Models\Pelayanan::STATUS_VERIFIKASI_KABIT,
+            default => false,
+        };
+    @endphp
+
+    @if($canComment)
+        <form action="{{ route('pelayanan.comments.store', $pelayanan) }}" method="POST" class="mb-4">
+            @csrf
+            <textarea name="comment" class="w-full border rounded p-2 mb-2" rows="3" placeholder="Tulis komentar..."></textarea>
+            @error('comment')
+                <div class="text-red-600 text-sm mb-2">{{ $message }}</div>
+            @enderror
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Kirim</button>
+        </form>
+    @endif
+
+    <ul class="mb-6">
+        @forelse($pelayanan->comments as $comment)
+            <li class="mb-2 border-b pb-2 text-sm">
+                <div class="text-gray-700">{{ $comment->user->name }} <span class="text-xs text-gray-500">{{ $comment->created_at }}</span></div>
+                <div>{{ $comment->comment }}</div>
+            </li>
+        @empty
+            <li class="text-sm text-gray-500">Belum ada komentar.</li>
+        @endforelse
+    </ul>
 
     <div class="mt-6">
         <a href="{{ url()->previous() }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Kembali</a>
