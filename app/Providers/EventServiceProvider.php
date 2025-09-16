@@ -11,7 +11,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\SendRejectionNotification::class,
         ],
         \App\Events\PelayananApproved::class => [
-            \App\Listeners\SendApprovalNotification::class,
+            \App\Listeners\PelayananApprovedListener::class,
         ],
         \App\Events\PelayananSubmitted::class => [
             \App\Listeners\SendNextRoleNotification::class,

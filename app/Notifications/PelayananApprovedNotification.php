@@ -10,10 +10,11 @@ class PelayananApprovedNotification extends Notification
     use Queueable;
 
     protected string $noUrut;
+    protected ?string $downloadUrl;
 
-    public function __construct(string $noUrut)
+    public function __construct(string $noUrut, ?string $downloadUrl = null)
     {
-        $this->noUrut = $noUrut;
+        $this->downloadUrl = $downloadUrl;
     }
 
     public function via(object $notifiable): array
@@ -23,8 +24,13 @@ class PelayananApprovedNotification extends Notification
 
     public function toArray(object $notifiable): array
     {
-        return [
+        $data = [
             'message' => "Pengajuan {$this->noUrut} telah disetujui.",
         ];
+        if ($this->downloadUrl) {
+            $data['url'] = $this->downloadUrl;
+        }
+
+        return $data;
     }
 }

@@ -26,6 +26,11 @@
                     @forelse(Auth::user()->notifications as $notification)
                         <div class="px-4 py-2 hover:bg-gray-100">
                             <span class="text-sm text-gray-700">{{ $notification->data['message'] ?? '' }}</span>
+                             @if(!empty($notification->data['url']))
+                                <a href="{{ $notification->data['url'] }}" class="block text-xs text-blue-600 hover:underline mt-1" target="_blank" rel="noopener">
+                                    Unduh sertifikat
+                                </a>
+                            @endif
                             <span class="block text-xs text-gray-400">{{ $notification->created_at->diffForHumans() }}</span>
                         </div>
                     @empty

@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Barryvdh\DomPDF\ServiceProvider as DompdfServiceProvider;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
     })
+    ->withProviders([
+        DompdfServiceProvider::class,
+    ])
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

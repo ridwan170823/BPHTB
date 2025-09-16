@@ -19,6 +19,7 @@ use App\Http\Controllers\KepalaUptController;
 use App\Http\Controllers\KasubitController;
 use App\Http\Controllers\KabitController;
 use App\Http\Controllers\PelayananCommentController;
+use App\Http\Controllers\CertificateController;
 
 
 // === AUTH ===
@@ -113,6 +114,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('{pelayanan}/approve', [KabitController::class, 'approve'])->name('approve');
         Route::post('{pelayanan}/reject', [KabitController::class, 'reject'])->name('reject');
     });
+     Route::get('/certificates/{pelayanan}/download', [CertificateController::class, 'download'])
+        ->name('certificates.download')
+        ->middleware('signed');
     Route::post('/pelayanan/{pelayanan}/comments', [PelayananCommentController::class, 'store'])
         ->name('pelayanan.comments.store')
         ->middleware('role:petugas_pelayanan,kepala_upt,kasubit_penataan,kabit_pendapatan');
