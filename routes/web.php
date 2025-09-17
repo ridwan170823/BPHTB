@@ -14,6 +14,7 @@ use App\Http\Controllers\NotaryDocumentController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\api\WajibPajakApiController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\PetugasPelayananController;
 use App\Http\Controllers\KepalaUptController;
 use App\Http\Controllers\KasubitController;
@@ -50,8 +51,7 @@ Route::middleware(['auth'])->group(function () {
 
     // === ADMIN ===
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', fn() => view('admin.dashboard'))->name('dashboard');
-
+       Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('/wajib-pajak', WajibPajakController::class);
         Route::resource('/objek-pajak', ObjekPajakController::class);
         Route::resource('/transaksi', TransaksiController::class);
