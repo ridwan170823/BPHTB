@@ -86,5 +86,6 @@ class Pelayanan extends Model
         return $this->hasMany(PelayananComment::class, 'pelayanan_id', 'no_urut_p')
             ->orderBy('created_at');
     }
+    
 
 }

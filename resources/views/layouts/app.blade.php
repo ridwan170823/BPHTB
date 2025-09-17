@@ -10,6 +10,8 @@
     @endphp
     <title>@yield('title', $pageTitle ?: 'Dashboard')</title>
 
+    <!-- @vite(['resources/css/app.css', 'resources/js/app.js']) -->
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 

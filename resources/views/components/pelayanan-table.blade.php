@@ -26,9 +26,14 @@
 @endphp
 
 <div class="p-6">
-     <form method="GET" action="{{ route($routePrefix.'.dashboard') }}" class="mb-4 flex flex-wrap items-end gap-2">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari No Urut"
-               class="border rounded px-2 py-1 text-xs">
+     <form method="GET" action="{{ route($routePrefix . '.dashboard') }}" class="mb-4 flex flex-wrap items-end gap-2">
+        <input
+            type="text"
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Cari No Urut"
+            class="border rounded px-2 py-1 text-xs"
+        >
         <select name="status" class="border rounded px-2 py-1 text-xs">
             <option value="">Semua Status</option>
             @foreach($statusLabels as $value => $label)
@@ -37,7 +42,9 @@
         </select>
         <input type="date" name="date_from" value="{{ request('date_from') }}" class="border rounded px-2 py-1 text-xs">
         <input type="date" name="date_to" value="{{ request('date_to') }}" class="border rounded px-2 py-1 text-xs">
-        <button type="submit" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded">Filter</button>
+        <button type="submit" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded">
+            Filter
+        </button>
     </form>
     <div class="overflow-x-auto bg-white dark:bg-gray-800 shadow rounded-xl border border-gray-200 dark:border-gray-700">
         <table id="pengajuanTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-600 text-sm">
@@ -49,31 +56,87 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                @foreach($pengajuans as $pengajuan)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                @foreach ($pengajuans as $pengajuan)
+                    @php
+                        $showStart = isset($startStatuses[$routePrefix]) && $pengajuan->status === $startStatuses[$routePrefix];
+                    @endphp
+                    <tr
+                        data-no-urut="{{ $pengajuan->no_urut_p }}"
+                        data-route-prefix="{{ $routePrefix }}"
+                        class="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                    >
                         <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $pengajuan->no_urut_p }}</td>
-                        <td class="px-6 py-4">{{ $statusLabels[$pengajuan->status] ?? $pengajuan->status }}</td>
-                        <td class="px-6 py-4">
-                            <a href="{{ route($routePrefix.'.show', $pengajuan->no_urut_p) }}" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded">Detail</a>
-                            @if(isset($startStatuses[$routePrefix]) && $pengajuan->status === $startStatuses[$routePrefix])
-                                <form action="{{ route($routePrefix.'.start', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
+                        <td class="px-6 py-4" data-column="status">
+                            {{ $statusLabels[$pengajuan->status] ?? $pengajuan->status }}
+                        </td>
+                        <td class="px-6 py-4 space-y-2" data-column="actions">
+                            <a
+                                href="{{ route($routePrefix . '.show', $pengajuan->no_urut_p) }}"
+                                class="inline-block px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded"
+                            >
+                                Detail
+                            </a>
+
+                            <div data-action="start" class="{{ $showStart ? '' : 'hidden' }}">
+                                <form
+                                    action="{{ route($routePrefix . '.start', $pengajuan->no_urut_p) }}"
+                                    method="POST"
+                                    class="inline"
+                                >
                                     @csrf
-                                    <button type="submit" class="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-semibold rounded">Mulai Verifikasi</button>
+                                   <button
+                                        type="submit"
+                                        class="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-semibold rounded"
+                                    >
+                                        Mulai Verifikasi
+                                    </button>
                                 </form>
-                            @else
-                                <form action="{{ route($routePrefix.'.approve', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
-                                    @csrf
-                                    <button type="submit" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded">Setuju</button>
-                                </form>
-                                <form action="{{ route($routePrefix.'.reject', $pengajuan->no_urut_p) }}" method="POST" style="display:inline">
-                                    @csrf
-                                    <input type="text" name="catatan" placeholder="Catatan penolakan" class="border rounded px-2 py-1 text-xs">
-                                    <button type="submit" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded">Tolak</button>
-                                </form>
-                                @if($pengajuan->catatan_penolakan)
-                                    <div class="mt-2 text-xs text-red-500">{{ $pengajuan->catatan_penolakan }}</div>
-                                @endif
-                            @endif
+                                </div>
+
+                            <div data-action="decision" class="space-y-2 {{ $showStart ? 'hidden' : '' }}">
+                                <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                                    <form
+                                        action="{{ route($routePrefix . '.approve', $pengajuan->no_urut_p) }}"
+                                        method="POST"
+                                        class="inline"
+                                    >
+                                        @csrf
+                                        <button
+                                            type="submit"
+                                            class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded"
+                                        >
+                                            Setuju
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        action="{{ route($routePrefix . '.reject', $pengajuan->no_urut_p) }}"
+                                        method="POST"
+                                        class="flex flex-wrap items-center gap-2"
+                                    >
+                                        @csrf
+                                        <input
+                                            type="text"
+                                            name="catatan"
+                                            placeholder="Catatan penolakan"
+                                            class="border rounded px-2 py-1 text-xs"
+                                        >
+                                        <button
+                                            type="submit"
+                                            class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded"
+                                        >
+                                            Tolak
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div
+                                    data-column="catatan"
+                                    class="mt-1 text-xs text-red-500 {{ $pengajuan->catatan_penolakan ? '' : 'hidden' }}"
+                                >
+                                    {{ $pengajuan->catatan_penolakan }}
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 @endforeach
@@ -87,12 +150,12 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function() {
-        $('#pengajuanTable').DataTable({
-            searching: false,
-            paging: false,
-            info: false
+        $(document).ready(function () {
+            $('#pengajuanTable').DataTable({
+                searching: false,
+                paging: false,
+                info: false,
+            });
         });
-         });
-</script>
+ </script>
 @endpush

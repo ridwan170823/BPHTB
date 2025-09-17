@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\PelayananRejected;
 use App\Events\PelayananStageApproved;
+use App\Events\PelayananStatusUpdated;
 
 class KepalaUptController extends Controller
 {
@@ -56,6 +57,7 @@ class KepalaUptController extends Controller
                 'user_id' => Auth::id(),
                 'created_at' => now(),
             ]);
+            event(new PelayananStatusUpdated($pelayanan));
         }
 
         return back();
@@ -80,6 +82,7 @@ class KepalaUptController extends Controller
             'user_id' => Auth::id(),
             'created_at' => now(),
         ]);
+         event(new PelayananStatusUpdated($pelayanan));
         event(new PelayananStageApproved($pelayanan, 'kasubit_penataan'));
 
         return back();
@@ -99,7 +102,7 @@ class KepalaUptController extends Controller
             'catatan' => $request->catatan,
             'created_at' => now(),
         ]);
-
+         event(new PelayananStatusUpdated($pelayanan));
         event(new PelayananRejected($pelayanan));
 
 

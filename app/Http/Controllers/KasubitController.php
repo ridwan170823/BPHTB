@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\PelayananRejected;
 use App\Events\PelayananStageApproved;
+use App\Events\PelayananStatusUpdated;
 
 class KasubitController extends Controller
 {
@@ -57,6 +58,7 @@ class KasubitController extends Controller
                 'user_id' => Auth::id(),
                 'created_at' => now(),
             ]);
+            event(new PelayananStatusUpdated($pelayanan));
         }
 
         return back();
@@ -80,6 +82,7 @@ class KasubitController extends Controller
             'user_id' => Auth::id(),
             'created_at' => now(),
         ]);
+        event(new PelayananStatusUpdated($pelayanan));
         event(new PelayananStageApproved($pelayanan, 'kabit_pendapatan'));
 
         return back();
@@ -100,7 +103,8 @@ class KasubitController extends Controller
             'created_at' => now(),
         ]);
 
-         event(new PelayananRejected($pelayanan));
+       event(new PelayananStatusUpdated($pelayanan));
+        event(new PelayananRejected($pelayanan));
 
         return back();
     }

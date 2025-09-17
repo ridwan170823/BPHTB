@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Events\PelayananSubmitted;
 use App\Services\NopParser;
 use App\Services\PelayananNumberService;
+use App\Events\PelayananStatusUpdated;
 
 class NotarisController extends Controller
 {
@@ -195,7 +196,7 @@ public function store(Request $request)
             'user_id' => Auth::id(),
             'created_at' => now(),
         ]);
-
+        event(new PelayananStatusUpdated($pelayanan));
         event(new PelayananSubmitted($pelayanan));
 
         return redirect()->route('notaris.pengajuan.index')->with('success', 'Pengajuan & berkas persyaratan berhasil disimpan.');
@@ -354,6 +355,7 @@ public function store(Request $request)
                     'catatan' => 'Pengajuan diajukan ulang oleh notaris',
                     'created_at' => now(),
                 ]);
+                 event(new PelayananStatusUpdated($pengajuan));
                 event(new PelayananSubmitted($pengajuan));
             }
 
