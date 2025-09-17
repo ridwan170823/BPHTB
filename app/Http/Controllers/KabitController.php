@@ -49,6 +49,10 @@ class KabitController extends Controller
         $pengajuans = $query->paginate();
         return view('kabit.dashboard', compact('pengajuans'));
     }
+    public function persetujuan(Request $request)
+    {
+        return $this->index($request);
+    }
     public function startVerification(Pelayanan $pelayanan)
     {
         if ($pelayanan->status === Pelayanan::STATUS_SETUJU_KASUBIT) {

@@ -48,6 +48,10 @@ class KepalaUptController extends Controller
         // }
         return view('kepalaupt.dashboard', compact('pengajuans'));
     }
+    public function verifikasi(Request $request)
+    {
+        return $this->index($request);
+    }
     public function startVerification(Pelayanan $pelayanan)
     {
         if ($pelayanan->status === Pelayanan::STATUS_SETUJU_PELAYANAN) {

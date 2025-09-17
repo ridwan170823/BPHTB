@@ -48,6 +48,10 @@ class PetugasPelayananController extends Controller
         // }
         return view('pelayanan.dashboard', compact('pengajuans'));
     }
+    public function verifikasi(Request $request)
+    {
+        return $this->index($request);
+    }
     public function startVerification(Pelayanan $pelayanan)
     {
         if ($pelayanan->status === Pelayanan::STATUS_DIAJUKAN) {
