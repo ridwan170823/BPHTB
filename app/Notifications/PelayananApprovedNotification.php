@@ -13,7 +13,8 @@ class PelayananApprovedNotification extends Notification
     protected ?string $downloadUrl;
 
     public function __construct(string $noUrut, ?string $downloadUrl = null)
-    {
+    {   
+        $this->noUrut = $noUrut;
         $this->downloadUrl = $downloadUrl;
     }
 
