@@ -53,7 +53,42 @@ class KasubitController extends Controller
     {
         return $this->index($request);
     }
+    public function riwayat(Request $request)
+    {
+        $statusOptions = [
+            Pelayanan::STATUS_SETUJU_KASUBIT => 'Disetujui Kasubit',
+            Pelayanan::STATUS_DITOLAK_KASUBIT => 'Ditolak Kasubit',
+        ];
 
+        $query = Pelayanan::query()
+            ->whereIn('status', array_keys($statusOptions));
+
+        if ($request->filled('status') && array_key_exists($request->status, $statusOptions)) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('search')) {
+            $query->where('no_urut_p', 'like', "%{$request->search}%");
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $pengajuans = $query
+            ->orderByDesc('tgl_selesai')
+            ->orderByDesc('no_urut_p')
+            ->get();
+
+        return view('kasubit.riwayat', [
+            'pengajuans' => $pengajuans,
+            'statusOptions' => $statusOptions,
+        ]);
+    }
     public function startVerification(Pelayanan $pelayanan)
     {
         if ($pelayanan->status === Pelayanan::STATUS_SETUJU_KEPALA_UPT) {
