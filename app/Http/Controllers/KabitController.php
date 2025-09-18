@@ -7,51 +7,40 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\PelayananRejected;
 use App\Events\PelayananApproved;
+use App\Http\Controllers\Concerns\HandlesPelayananDashboard;
 use App\Events\PelayananStatusUpdated;
 
 class KabitController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pelayanan::query()
-            ->whereIn('status', [
-                Pelayanan::STATUS_SETUJU_KASUBIT,
-                Pelayanan::STATUS_VERIFIKASI_KABIT,
-            ]);
+        $activeStatuses = [
+            Pelayanan::STATUS_SETUJU_KASUBIT,
+            Pelayanan::STATUS_VERIFIKASI_KABIT,
+        ];
 
-        // foreach ($pengajuans as $pengajuan) {
-        //     if ($pengajuan->status === Pelayanan::STATUS_SETUJU_KASUBIT) {
-        //         $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_KABIT]);
-        //         $pengajuan->statusLogs()->create([
-        //             'status' => Pelayanan::STATUS_VERIFIKASI_KABIT,
-        //             'user_id' => Auth::id(),
-        //             'created_at' => now(),
-        //         ]);
-        //     }
-        // }
+        $summary = $this->getPelayananSummary([
+            'baru' => [Pelayanan::STATUS_SETUJU_KASUBIT],
+            'proses' => [Pelayanan::STATUS_VERIFIKASI_KABIT],
+            'disetujui' => [Pelayanan::STATUS_SETUJU_KABIT],
+            'ditolak' => [Pelayanan::STATUS_DITOLAK_KABIT],
+        ]);
+        $latestPengajuans = $this->getPelayananPreview($activeStatuses);
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('search')) {
-            $query->where('no_urut_p', 'like', "%{$request->search}%");
-        }
-
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        $pengajuans = $query->paginate();
-        return view('kabit.dashboard', compact('pengajuans'));
+          return view('kabit.dashboard', [
+            'summary' => $summary,
+            'latestPengajuans' => $latestPengajuans,
+            'statusLabels' => $this->statusLabels(),
+        ]);
     }
     public function persetujuan(Request $request)
     {
-        return $this->index($request);
+         $pengajuans = $this->paginatePelayanan($request, [
+            Pelayanan::STATUS_SETUJU_KASUBIT,
+            Pelayanan::STATUS_VERIFIKASI_KABIT,
+        ]);
+
+        return view('kabit.persetujuan', compact('pengajuans'));
     }
     public function riwayat(Request $request)
     {

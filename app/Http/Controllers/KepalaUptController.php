@@ -8,49 +8,38 @@ use Illuminate\Support\Facades\Auth;
 use App\Events\PelayananRejected;
 use App\Events\PelayananStageApproved;
 use App\Events\PelayananStatusUpdated;
+use App\Http\Controllers\Concerns\HandlesPelayananDashboard;
 
 class KepalaUptController extends Controller
 {
+   use HandlesPelayananDashboard;
    public function index(Request $request)
     {
-       $query = Pelayanan::query()
-            ->whereIn('status', [
-                Pelayanan::STATUS_SETUJU_PELAYANAN,
-                Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT,
-            ]);
-             if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('search')) {
-            $query->where('no_urut_p', 'like', "%{$request->search}%");
-        }
-
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        $pengajuans = $query->paginate();
-
-        // foreach ($pengajuans as $pengajuan) {
-        //     if ($pengajuan->status === Pelayanan::STATUS_SETUJU_PELAYANAN) {
-        //         $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT]);
-        //         $pengajuan->statusLogs()->create([
-        //             'status' => Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT,
-        //             'user_id' => Auth::id(),
-        //             'created_at' => now(),
-        //         ]);
-        //     }
-        // }
-        return view('kepalaupt.dashboard', compact('pengajuans'));
+       $activeStatuses = [
+            Pelayanan::STATUS_SETUJU_PELAYANAN,
+            Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT,
+        ];
+        $summary = $this->getPelayananSummary([
+            'baru' => [Pelayanan::STATUS_SETUJU_PELAYANAN],
+            'proses' => [Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT],
+            'disetujui' => [Pelayanan::STATUS_SETUJU_KEPALA_UPT],
+            'ditolak' => [Pelayanan::STATUS_DITOLAK_KEPALA_UPT],
+        ]);
+         $latestPengajuans = $this->getPelayananPreview($activeStatuses);
+         return view('kepalaupt.dashboard', [
+            'summary' => $summary,
+            'latestPengajuans' => $latestPengajuans,
+            'statusLabels' => $this->statusLabels(),
+        ]);
     }
     public function verifikasi(Request $request)
     {
-        return $this->index($request);
+       $pengajuans = $this->paginatePelayanan($request, [
+            Pelayanan::STATUS_SETUJU_PELAYANAN,
+            Pelayanan::STATUS_VERIFIKASI_KEPALA_UPT,
+        ]);
+
+        return view('kepalaupt.verifikasi', compact('pengajuans'));
     }
     public function riwayat(Request $request)
     {

@@ -1,4 +1,4 @@
-@props(['pengajuans', 'routePrefix'])
+@props(['pengajuans', 'routePrefix', 'filterRoute' => null])
 
 @php
     use App\Models\Pelayanan;
@@ -26,7 +26,10 @@
 @endphp
 
 <div class="p-6">
-     <form method="GET" action="{{ route($routePrefix . '.dashboard') }}" class="mb-4 flex flex-wrap items-end gap-2">
+     <form
+        method="GET"
+        action="{{ route($filterRoute ?? ($routePrefix . '.dashboard')) }}"
+        class="mb-4 flex flex-wrap items-end gap-2">
         <input
             type="text"
             name="search"

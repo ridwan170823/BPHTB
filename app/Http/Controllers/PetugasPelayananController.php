@@ -8,49 +8,38 @@ use Illuminate\Support\Facades\Auth;
 use App\Events\PelayananRejected;
 use App\Events\PelayananStageApproved;
 use App\Events\PelayananStatusUpdated;
+use App\Http\Controllers\Concerns\HandlesPelayananDashboard;
 
 class PetugasPelayananController extends Controller
 {
-   public function index(Request $request)
+   use HandlesPelayananDashboard;
+    public function index(Request $request)
     {
-           $query = Pelayanan::query()
-            ->whereIn('status', [
-                Pelayanan::STATUS_DIAJUKAN,
-                Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
-            ]);
-            if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('search')) {
-            $query->where('no_urut_p', 'like', "%{$request->search}%");
-        }
-
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        $pengajuans = $query->paginate();
-         
-        // foreach ($pengajuans as $pengajuan) {
-        //     if ($pengajuan->status === Pelayanan::STATUS_DIAJUKAN) {
-        //         $pengajuan->update(['status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN]);
-        //         $pengajuan->statusLogs()->create([
-        //             'status' => Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
-        //             'user_id' => Auth::id(),
-        //             'created_at' => now(),
-        //         ]);
-        //     }
-        // }
-        return view('pelayanan.dashboard', compact('pengajuans'));
+        $activeStatuses = [
+            Pelayanan::STATUS_DIAJUKAN,
+            Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
+        ];
+        $summary = $this->getPelayananSummary([
+            'baru' => [Pelayanan::STATUS_DIAJUKAN],
+            'proses' => [Pelayanan::STATUS_VERIFIKASI_PELAYANAN],
+            'disetujui' => [Pelayanan::STATUS_SETUJU_PELAYANAN],
+            'ditolak' => [Pelayanan::STATUS_DITOLAK_PELAYANAN],
+        ]);
+        $latestPengajuans = $this->getPelayananPreview($activeStatuses);
+         return view('pelayanan.dashboard', [
+            'summary' => $summary,
+            'latestPengajuans' => $latestPengajuans,
+            'statusLabels' => $this->statusLabels(),
+        ]);
     }
     public function verifikasi(Request $request)
     {
-        return $this->index($request);
+        $pengajuans = $this->paginatePelayanan($request, [
+            Pelayanan::STATUS_DIAJUKAN,
+            Pelayanan::STATUS_VERIFIKASI_PELAYANAN,
+        ]);
+
+        return view('pelayanan.verifikasi', compact('pengajuans'));
     }
     public function riwayat(Request $request)
     {
