@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
 
     // === ADMIN ===
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
-       Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('/wajib-pajak', WajibPajakController::class);
         Route::resource('/objek-pajak', ObjekPajakController::class);
         Route::resource('/transaksi', TransaksiController::class);
@@ -82,8 +82,8 @@ Route::middleware(['auth'])->group(function () {
     // === PETUGAS PELAYANAN ===
     Route::middleware('role:petugas_pelayanan')->prefix('pelayanan')->name('pelayanan.')->group(function () {
         Route::get('/dashboard', [PetugasPelayananController::class, 'index'])->name('dashboard');
-        Route::get('{pelayanan}', [PetugasPelayananController::class, 'show'])->name('show');
         Route::get('/verifikasi', [PetugasPelayananController::class, 'verifikasi'])->name('verifikasi');
+        Route::get('{pelayanan}', [PetugasPelayananController::class, 'show'])->name('show');
         Route::post('{pelayanan}/start', [PetugasPelayananController::class, 'startVerification'])->name('start');
         Route::post('{pelayanan}/approve', [PetugasPelayananController::class, 'approve'])->name('approve');
         Route::post('{pelayanan}/reject', [PetugasPelayananController::class, 'reject'])->name('reject');
@@ -92,8 +92,8 @@ Route::middleware(['auth'])->group(function () {
     // === KEPALA UPT ===
     Route::middleware('role:kepala_upt')->prefix('kepalaupt')->name('kepalaupt.')->group(function () {
         Route::get('/dashboard', [KepalaUptController::class, 'index'])->name('dashboard');
-        Route::get('{pelayanan}', [KepalaUptController::class, 'show'])->name('show');
         Route::get('/verifikasi', [KepalaUptController::class, 'verifikasi'])->name('verifikasi');
+        Route::get('{pelayanan}', [KepalaUptController::class, 'show'])->name('show');
         Route::post('{pelayanan}/start', [KepalaUptController::class, 'startVerification'])->name('start');
         Route::post('{pelayanan}/approve', [KepalaUptController::class, 'approve'])->name('approve');
         Route::post('{pelayanan}/reject', [KepalaUptController::class, 'reject'])->name('reject');
